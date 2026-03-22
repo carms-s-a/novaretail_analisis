@@ -4,7 +4,7 @@ Un análisis realizado a partir de una base de datos ficticia de una empresa de 
 # ¡Bienvenid@!
 ## Aquí te dejo el trabajo realizado. No dudes en contactarme si tienes alguna duda :) ¡Espero que te sirva este proyecto!
 
-#Acerca del dataframe
+# Acerca del dataframe
 
 ## El presente análisis fue realizado a partir de un dataframe con los siguientes campos: 
 
@@ -24,11 +24,11 @@ Un análisis realizado a partir de una base de datos ficticia de una empresa de 
 El dataset cuenta con 15,000 registros sin valores nulos. Es decir, este análisis se realiza con una base de datos de 15,000 usuarios. 
 Es importante especificar que se trata de un dataframe de una empresa ficticia llamada 'Novaretail', que fue proporcionado en la séptima etapa del curso de análisis de datos de la academia TripleTen. 
 
-#Objetivos
+# Objetivos
 
 El objetivo de este análisis es generar hipótesis a partir de este set de datos que tras un mayor análisis permitan tomar decisiones informadas para el crecimiento de la empresa y el aprovechamiento de los recursos como la inversión en publicidad, aumentando las compras y la satisfacción de los clientes. 
 
-#Metodología
+# Metodología
 
 ## Primera revisión y limpieza de datos: 
 Para cumplir este objetivo, se inició realizando una revisión del dataframe para verificar que no existieran valores nulos y que los datos correspondieran a los formatos esperados. 
