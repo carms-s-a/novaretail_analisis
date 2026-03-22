@@ -1,12 +1,394 @@
-## 1. Importar dataframe y librerías
+# 1. Importar dataframe y librerías y explorar datos
 
-# Importar librerías
+## Importar librerías
 import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-# Cargar y leer dataset
+## Cargar y leer dataset
 url = "https://github.com/carms-s-a/novaretail_analisis/blob/main/novaretail_comportamiento_clientes_2024.csv"
 df = pd.read_csv(url)
 print(df.head())
+
+**Resultado:**
+RangeIndex: 15000 entries, 0 to 14999
+Data columns (total 12 columns):
+ #   Column                     Non-Null Count  Dtype  
+---  ------                     --------------  -----  
+ 0   id_cliente                 15000 non-null  object 
+ 1   edad                       15000 non-null  float64
+ 2   nivel_ingreso              15000 non-null  float64
+ 3   visitas_mes                15000 non-null  int64  
+ 4   compras_mes                15000 non-null  int64  
+ 5   gasto_publicidad_dirigida  15000 non-null  float64
+ 6   satisfaccion               15000 non-null  float64
+ 7   miembro_premium            15000 non-null  int64  
+ 8   abandono                   15000 non-null  int64  
+ 9   tipo_dispositivo           15000 non-null  object 
+ 10  region                     15000 non-null  object 
+ 11  ingreso_anual              15000 non-null  float64
+
+## Descripción del dataset:
+El dataset contiene las siguientes columnas:
+
+id_cliente — Identificador único del cliente.
+edad — Edad del cliente.
+nivel_ingreso — Ingreso anual estimado del cliente.
+visitas_mes — Número de visitas a la aplicación o sitio web durante el mes.
+compras_mes — Número de compras realizadas en el mes.
+gasto_publicidad_dirigida — Gasto en anuncios asignado al usuario.
+satisfaccion — Calificación de satisfacción del cliente en una escala del 1 al 5.
+miembro_premium — Indica si el cliente tiene suscripción premium (1) o no (0).
+abandono — Indica si el cliente abandonó la plataforma (1) o no (0).
+tipo_dispositivo — Tipo de dispositivo utilizado por el cliente (móvil, escritorio o tablet).
+region — Región geográfica del cliente (norte, sur, oeste o este).
+ingreso_anual — Ingreso anual generado por el cliente para la empresa.
+La métrica principal de análisis es ingreso_anual, utilizada para evaluar el impacto económico de los clientes.
+
+## Mostrar las primeras 5 filas: 
+df.head()
+**Resultado:**
+id_cliente	edad	nivel_ingreso	visitas_mes	compras_mes	gasto_publicidad_dirigida	satisfaccion	miembro_premium	abandono	tipo_dispositivo	region	ingreso_anual
+------------------------------------------------------------------------------------------------------------------------------------------
+0	CL-100000	44.0	28565.77	    9	          1	          31.36	                    3.9	          0	              0	        móvil	            norte	  23.22
+1	CL-100001	36.0	29673.44	    11	        3	          24.66	                    3.7	          0	              0	        tablet	          sur	    93.47
+2	CL-100002	46.0	30642.95	    9         	0	          0.00	                    2.9	          0	              0	        móvil	            este	  0.00
+3	CL-100003	56.0	39468.61	    8	          0	          6.81                      2.1           1               1         móvil             este    24.8
+
+Exploración inicial de los datos
+
+El conjunto de datos contiene 15,000 registros y 12 columnas, sin valores nulos.
+
+**Variables numéricas**
+Se identifican las siguientes columnas numéricas:
+
+'edad'
+'nivel_ingreso'
+'visitas_mes'
+'compas_mes'
+'gasto_publicidad_dirigida'
+'satisfacción'
+'ingreso_anual'
+
+La mayoría de estas variables presentan tipos de datos adecuados.
+Las columnas 'visitas_mes' y 'compras_mes', sin embargo, cuentan con el tipo de dato incorrecto (int64 en lugar de float64).
+
+**Variables binarias**
+Las siguientes columnas representan variables binarias:
+
+miembro_premium
+abandono
+
+Ambas están codificadas como 0 y 1, no requieren transformación adicional.
+
+**Variables categóricas**
+Se identifican las siguientes columnas categóricas:
+
+id_cliente
+tipo_dispositivo
+region
+
+Estas variables están correctamente definidas y no requieren transformación adicional.
+
+**Corregir el tipo de dato:**
+Correción:
+df['visitas_mes'] = df['visitas_mes'].astype('float64')
+df['compras_mes'] = df['compras_mes'].astype('float64')
+Verificar cambios: 
+df.info()
+
+Resultado: 
+RangeIndex: 15000 entries, 0 to 14999
+Data columns (total 12 columns):
+ #   Column                     Non-Null Count  Dtype  
+---  ------                     --------------  -----  
+ 0   id_cliente                 15000 non-null  object 
+ 1   edad                       15000 non-null  float64
+ 2   nivel_ingreso              15000 non-null  float64
+ 3   visitas_mes                15000 non-null  float64
+ 4   compras_mes                15000 non-null  float64
+ 5   gasto_publicidad_dirigida  15000 non-null  float64
+ 6   satisfaccion               15000 non-null  float64
+ 7   miembro_premium            15000 non-null  int64  
+ 8   abandono                   15000 non-null  int64  
+ 9   tipo_dispositivo           15000 non-null  object 
+ 10  region                     15000 non-null  object 
+ 11  ingreso_anual              15000 non-null  float64
+dtypes: float64(7), int64(2), object(3)
+memory usage: 1.4+ MB
+
+## Explorar variables numéricas:
+col_num = df[['edad', 'nivel_ingreso', 'visitas_mes', 'compras_mes', 'gasto_publicidad_dirigida', 'satisfaccion', 'ingreso_anual']]
+col_num.describe()
+
+**Resultado:**
+      edad	        nivel_ingreso	visitas_mes	  compras_mes	     gasto_publicidad_dirigida	satisfaccion	ingreso_anual
+------------------------------------------------------------------------------------------------------
+count	15000.000000	15000.000000	15000.000000	15000.000000	   15000.000000	              15000.000000	15000.000000
+mean	38.262400	    30019.704782	10.029000	    1.206467	       20.149301	                3.603693	    36.594180
+std	  11.492378	    9833.166305	  3.158189	    1.105284	       10.880724	                0.685300	    34.484888
+min	  18.000000	    8000.000000	  1.000000	    0.000000	       0.000000	                  1.000000	    0.000000
+25%	  30.000000	    23127.097500	8.000000	    0.000000	       12.310000	                3.100000	    0.000000
+50%	  38.000000	    30023.745000	10.000000	    1.000000	       19.730000	                3.600000	    30.705000
+75%	  46.000000	    36768.440000	12.000000	    2.000000	       27.292500	                4.100000	    58.220000
+max	  75.000000	    74790.840000	25.000000	    8.000000	       75.510000	                5.000000	    244.690000
+
+**Comentario:**
+'edad': La edad míninma es 18 y la máxima 75, lo que parece correcto. Por otra parte, el promedio es 38 y el 50% de los clientes tiene menos de 30 años, mientras que el 75% se encuentran por debajo de los 38. Esto puede indicar que la edad de los clientes se concentra en este rango.
+'nivel_inreso': Los niveles de ingreso también parecen correctos. El 50% de los clientes cuenta con un nivel de ingresos de 23,000 a 36.000 aproximadamente.
+'visitas_mes': En promedio, los clientes hacen 10 visitas añl mes. La cantidad máxima de visitas es 25.
+'compras_mes': Solo el 50% de los clientes hacen una compra o más al mes. La cantidad máxima de compras es 8, pero es porbable que se trate de un Outlier porque el 75% de los clientesn no hace más de dos compras mensuales.
+'gasto_publicidad_dirigida': En promedio, el gasto es de 20. El 75% de los casos se encuentra por debajo de 27.
+'satisfaccion': Las reseñas de satisfacción tienen un promedio de 3.6. Llama la atención que el 50% de los clienetes dió una calificación de 3.6 o menor.
+'ingreso_anual': El 25% de los clientes, por lo menos, no cuenta con un ingreso anual. y a pesar de que el máximo es 244, el 75% se encuentra por debajo de los $27.
+
+## Explorar variables binarias
+Verificar que cada columna tenga únicamente dos valores posibles:
+col_bin = df[['miembro_premium', 'abandono']]
+col_bin.describe()
+
+**Resultado:*
+      miembro_premium	abandono
+--------------------------------
+count	15000.000000	  15000.000000
+mean	0.139267	      0.150733
+std	  0.346236	      0.357801
+min	  0.000000	      0.000000
+25%	  0.000000	      0.000000
+50%	  0.000000	      0.000000
+75%	  0.000000	      0.000000
+max	 1.000000	        1.000000
+
+**Comenario:**
+miembro_premium: El 75% de los miembros, como mínimo, no tiene suscripción premium.
+abandono: El 75% de los miembros, como mínimo, no ha abandonado el sistema
+
+## Explorar variables categóricas
+Verificar el número de valores únicos por variable categórica
+col_cat = df[['tipo_dispositivo', 'region']]
+col_cat.nunique()
+
+**Resultado:**
+tipo_dispositivo    3
+region              4
+dtype: int64
+
+Explorar variables categóricas y cómo se distribuyen
+for col in col_cat:
+    print(col)
+    print('Conteo de valores')
+    print(df[col].value_counts())
+    print('Frecuencia')
+    print(df[col].value_counts(normalize=True))
+
+**Resultado:**
+
+tipo_dispositivo
+Conteo de valores
+móvil         9818
+escritorio    3720
+tablet        1462
+Name: tipo_dispositivo, dtype: int64
+Frecuencia
+móvil         0.654533
+escritorio    0.248000
+tablet        0.097467
+Name: tipo_dispositivo, dtype: float64
+region
+Conteo de valores
+norte    4395
+oeste    3810
+sur      3726
+este     3069
+Name: region, dtype: int64
+Frecuencia
+norte    0.2930
+oeste    0.2540
+sur      0.2484
+este     0.2046
+Name: region, dtype: float64
+
+**Comentario:**
+´tipo_dispositivo´: El tipo de dispositivo más común es el móvil, que corresponde al 65% de los usuarios. Solo el 9% de los usuarios utiliza una tablet.
+'region': La región con más usuarios es la norte, con 29%. La región con menos usuarios es el este, con 20%.
+
+# 3. Visualización
+## Heatmap
+**Visualizar la matriz de correlación para identificar relaciones**
+corr=df.corr()
+sns.heatmap(corr, annot=True, cmap="coolwarm", center=0)
+plt.show()
+
+**Resultado en la documentación del repositorio**
+Observaciones generales (Heatmap):
+En general, el heatmap muestra que existe una relación fuerte entre las visitas al mes y el gasto en publicidad dirigida y las compras al mes.
+Observaciones respecto a ingreso_anual
+La variable de ingreso mensual parece ser la más relacionada con las demás variables. Así, por ejemplo, la relación más fuerte del heatmap es entre las compras mensuales y el ingreso anual.
+
+## Scatterplot general
+Se decidió analizar únicamente las variables de ingreso_anual, visitas_mes, compras_mes, gasto_publicidad_dirigida, y miembro_premium, ya que las demás variables, de acuerdo con el heatmap no presentan una correlación mayor a 0,053
+
+Visualizar pares de variables con relaciones moderadas o fuertes:
+sns.pairplot(df[['ingreso_anual', 'visitas_mes', 'compras_mes', 'gasto_publicidad_dirigida']])
+
+**Resultado en la documentación del repositorio**
+Observaciones iniciales (Scatterplot):
+- ingreso anual vs visitas al mes
+El ingreso anual parece tener una corelación positiva relevante con las visitas al mes.
+- Ingreso anual vs compras por mes
+Estas dos variables presentan una correlación positiva fuerte, evidente en el heatmap y en el scatterplot
+- Gasto en publicidad dirigida vs visitas al mes
+Aquí hay una fuerte correlación positiva. Evidente en ambos estudios. Puede indicar quela publicidad está funcionando para atraer clientes al sitio
+- Gasto en publicidad dirigida vs compras al mes
+Aquí también existe una considerable correlación positiva, aunque valdría la pena fortalecerla para incrementar el ROI de la publicidad.
+- Visitas al mes vs compras al mes
+Eciste una correlación positiva, pero valdía la pena analizar porqué no es más fuerte.
+
+# 4. Coeficientes de correlación y evidencia numérica
+## Cálculo de correlación de Pearson: 
+print('Coeficiente de pearson para ingreso anual y visitas al mes:')
+print(df['ingreso_anual'].corr(df['visitas_mes'], method='pearson'))
+print('Coeficiente de pearson para ingreso anual y compras al mes:')
+print(df['ingreso_anual'].corr(df['compras_mes'], method='pearson'))
+print('Coeficiente de pearson para gasto en publicidad dirigida y visitas al mes:')
+print(df['gasto_publicidad_dirigida'].corr(df['visitas_mes'], method='pearson'))
+print('Coeficiente de pearson para visitas al mes y compras al mes:')
+print(df['visitas_mes'].corr(df['compras_mes'], method='pearson'))
+
+**Resultado:**
+Coeficiente de pearson para ingreso anual y visitas al mes:
+0.33714664324987453
+Coeficiente de pearson para ingreso anual y compras al mes:
+0.9671485435708566
+Coeficiente de pearson para gasto en publicidad dirigida y visitas al mes:
+0.5789472719412827
+Coeficiente de pearson para visitas al mes y compras al mes:
+0.3538438947198978
+
+## Cálculo de correlación de Spearman:
+# Calcular correlación entre variables relevantes
+print('Coeficiente de pearson para ingreso anual y visitas al mes:')
+print(df['ingreso_anual'].corr(df['visitas_mes'], method='spearman'))
+print('Coeficiente de pearson para ingreso anual y compras al mes:')
+print(df['ingreso_anual'].corr(df['compras_mes'], method='spearman'))
+print('Coeficiente de pearson para gasto en publicidad dirigida y visitas al mes:')
+print(df['gasto_publicidad_dirigida'].corr(df['visitas_mes'], method='spearman'))
+print('Coeficiente de pearson para visitas al mes y compras al mes:')
+print(df['visitas_mes'].corr(df['compras_mes'], method='spearman'))
+
+**Resultado:**
+Coeficiente de pearson para ingreso anual y visitas al mes:
+0.3209536973769648
+Coeficiente de pearson para ingreso anual y compras al mes:
+0.9674824920326731
+Coeficiente de pearson para gasto en publicidad dirigida y visitas al mes:
+0.5592673242622609
+Coeficiente de pearson para visitas al mes y compras al mes:
+0.33294292722789276
+
+Observaciones de correlación:
+Las cifras de las correlaciones calculadas mediante el método Pearson y el método Spearman parecen comprobar las hipótesis propuestas a partir del heatmap y el scatterplot. Por otra parte, no existe mucha diferencia entre los resultados de ambos métodos, por lo que se puede decir que las relaciones son relativamente lineales y estables en lo general.
+
+## Cálculo de punto-biserial
+Calcular correlación entre variables relevantes
+from scipy.stats import pointbiserialr
+print('Correlación punto-biserial entre miembro premium y nivel de ingreso')
+print(pointbiserialr(df['miembro_premium'], df['nivel_ingreso']))
+print('Correlación punto-biserial entre miembro premium e ingreso anual')
+print(pointbiserialr(df['miembro_premium'], df['ingreso_anual']))
+print('Correlación punto-biserial entre miembro premium y gasto en publicidad dirigida')
+print(pointbiserialr(df['miembro_premium'], df['gasto_publicidad_dirigida']))
+print('Corrlación punto-biserial entre gasto publicidad dirigida y abandono')
+print(pointbiserialr(df['abandono'], df['gasto_publicidad_dirigida']))
+
+**Resultado:**
+Correlación punto-biserial entre miembro premium y nivel de ingreso
+SignificanceResult(statistic=-0.0055984113364689414, pvalue=0.4929585763778283)
+Correlación punto-biserial entre miembro premium e ingreso anual
+SignificanceResult(statistic=0.0930994396198015, pvalue=3.0943076155242597e-30)
+Correlación punto-biserial entre miembro premium y gasto en publicidad dirigida
+SignificanceResult(statistic=0.0027207774632817556, pvalue=0.7389843211104624)
+Corrlación punto-biserial entre gasto publicidad dirigida y abandono
+SignificanceResult(statistic=-0.004585823906401753, pvalue=0.5743868235545473)
+
+Observaciones Punto-biserial
+- Miembro premium vs nivel de ingreso/ingreso anual
+La correlación no es eviente. Al parecer, las variables no están´fuertemente relacionadas. Valdría la pena investigar más cómo se pueden aumentar las suscripciones premium.
+- Gasto en publicidad dirigida vs abandono
+La correlación es muy debil, lo que podría indicar que la publicidad está atrayendo clientes, pero no reteniéndolos.
+- Miembro premium vs gasto en publicidad dirigida
+La relación aquí tampoco es fuerte. Esto puede tambien indicar que la publicidad tampoco está haciendo que los clientes se inscriban a la suscripción premium.
+
+## Cálculo de V de Cramér
+Función para calcular V de Cramér
+from scipy.stats import chi2_contingency
+tabla = pd.crosstab(df['region'], df['tipo_dispositivo'])
+print('Tabla de contingenca')
+print(tabla)
+chi2, p, dof, expected = chi2_contingency(tabla)
+print('chi2')
+print(chi2)
+
+**Resultado:**
+Tabla de contingenca
+tipo_dispositivo  escritorio  móvil  tablet
+region                                     
+este                     766   2003     300
+norte                   1125   2843     427
+oeste                    935   2489     386
+sur                      894   2483     349
+chi2
+4.596697852095489
+
+Aplicar V de Cramér en variables relevantes
+n=tabla.sum().sum()
+cramers_v=np.sqrt(chi2/(n*(min(tabla.shape)-1)))
+cramers_v
+
+**Resultado:**
+0.012378338407739397
+
+Observaciones V de Cramér
+Es posible observar que en realidad no existe una relación aparente entre la región y el tipo de dispositivo
+
+# Interpretación de resultados para el negocio: 
+## Hallazgo 1
+El gasto en publicidad aumenta las visitas y las compras. Sin embargo, no impide el abandono de los clientes ni aumenta las suscripciones premium.
+
+- Evidencia visual: El scatterplot y el heatmap muestran una relación positiva en el caso de esta variable ante las vistas y una correlación significativa con las compras.
+- Evidencia numérica: Lo mencionado anteriormente se confirma mediante el cálculo del coeficiente de correlación con el método Pearman y Spearson. Por otra parte, el nivel bajo del coeficiente de relación V de Cramer, entre los gastos en publicidad y el abandono y la suscripción premium, muestra que estas variables no están fuertemente relacionadas.
+- Interpretación
+La publicidad cumple la función de atraer clientes, pero no de mantenerlos o de aumentar las suscripciones premium.
+- No podemos afirmar
+El motivo por el cual la publicidad tiene este efecto. Hay que analizarla más a detalle.
+- Implicación de negocio
+La publicidada está funcionando para atraer clientes, sin embargo, valdría la pena analizar si es posible hacer que los mantenga y que aumente las suscripciones premium.
+
+## Hallazgo 2 
+Existe una relación entre ingreso anual y compras al mes.
+
+- Evidencia visual: El heatmap y el sactterplot demuestran que existe una fuerte correlación entre estas variables.
+- Evidencia numérica: Los coeficientes de Person y Spearman confirman esta teoría.
+- Interpretación
+Es posible que se trate de artículos de lujo, es decir, de artículos que son comprados por el valor de estatus que representan, y no necesariamente por su precio.
+- No podemos afirmar
+Que se trate de un factor causal. Hay que analizar variables ocultas y preguntarse qué otros factores influyen para que exista esta correlación.
+- Implicación de negocio
+Es posible que valga la pena revisar el costo de los productos y preguntarse porqué las personas con menos ingresos no compran estos productos.
+
+# Próximos pasos: 
+## Limitaciones
+Correlación ≠ causalidad: Es decir, este análisis únicamente representa una primera interpretación de los datos. Para generar una hipótesis más acertada, se requiere de mayor información y contexto.
+## Próximos pasos
+
+Probar segmentación adicional
+- Podría ser relevante generar una segmentación entre usuarios de mayores ingresos,
+Al igual, se podría hacer uan segmentación entre usuarios con y sin siscripción premium
+
+- Analizar el motivo de abandono
+Sería útil realizar un análisis con mayor información acerca de el motivo por el cual los clientes abandonan la plataforma.
+
+- Analizar la influencia del tipo de dispoditivo sobre la
+
+
