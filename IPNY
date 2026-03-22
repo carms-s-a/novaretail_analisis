@@ -1,0 +1,12 @@
+## 1. Importar dataframe y librerías
+
+# Importar librerías
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Cargar y leer dataset
+url = "https://github.com/carms-s-a/novaretail_analisis/blob/main/novaretail_comportamiento_clientes_2024.csv"
+df = pd.read_csv(url)
+print(df.head())
